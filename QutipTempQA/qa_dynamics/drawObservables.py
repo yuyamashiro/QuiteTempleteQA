@@ -30,10 +30,10 @@ def draw_observables(observables, N, Tlist, system, params, variable):
 
             # calculate observables
             for obs, path in observables.items():
-                if obs == "ResidualEnergy":
+                if obs == "Residual energy":
                     Eres = 1.0 / sys.N * np.abs(expect(sys.H(T), final_state) - correct_energy[0])
                     obs_eachT[obs].append(Eres)
-                elif obs == "MisProbability":
+                elif obs == "Probability of mistaking":
                     miss_prob = 1.0 - np.abs((correct_state[0].dag() * final_state).full()[0][0]) ** 2
                     obs_eachT[obs].append(miss_prob)
                 else:
@@ -53,7 +53,7 @@ def draw_to_figure(observable, path, result_mat, Tlist, N, params, variable):
 
     plt.figure()
     plot_setting()
-    plt.xlabel("$T_{Q} : Annealing time$")
+    plt.xlabel("$T_{Q}$ : Annealing time")
     plt.ylabel(observable)
     plt.xscale('log')
     plt.yscale('log')

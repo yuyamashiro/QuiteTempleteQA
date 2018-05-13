@@ -2,8 +2,8 @@ from QASystemClass import FullConnectSystem
 from QutipTempQA import draw_observables
 
 def main():
-    observables = {"ResidualEnergy":"./figure/Eres/",
-                  "MisProbability":"./figure/MissProb/"}
+    observables = {"Residual energy":"./figure/Eres/",
+                  "Probability of mistaking":"./figure/MissProb/"}
 
     N = 3
     Tlist = [1,10,50]
