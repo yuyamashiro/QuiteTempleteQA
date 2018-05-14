@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from QutipTempQA.utils.utils import *
 from .dynamics import dynamics_result
 
-def draw_observables(observables, N, Tlist, system, params, variable):
+def draw_observables(observables, N, Tlist, system, params, variables):
 
 
     # dictionary( values type is 2d array ) of result of observables that is specified
@@ -15,14 +15,14 @@ def draw_observables(observables, N, Tlist, system, params, variable):
 
     # result_obs have 2d-array(matrix) 1-axis : each T, 2-axis : each variable
     # follow two for statement is doing stuck result to result_obs
-    for i,var in enumerate(variable[1]):
+    for i,var in enumerate(variables[1]):
         obs_eachT = {}
         for key,_ in observables.items():
             obs_eachT[key] = []
 
         for T in Tlist:
             allparams = params
-            allparams[variable[0]] = var
+            allparams[variables[0]] = var
             sys = system(T, N, allparams)
             results = dynamics_result(sys, N, T, allparams)
             final_state = results[0]
@@ -45,7 +45,7 @@ def draw_observables(observables, N, Tlist, system, params, variable):
 
     # draw figure of result vs T
     for obs, path in observables.items():
-        draw_to_figure(obs, path, result_obs[obs], Tlist, N, params, variable)
+        draw_to_figure(obs, path, result_obs[obs], Tlist, N, params, variables)
 
 
 def draw_to_figure(observable, path, result_mat, Tlist, N, params, variable):

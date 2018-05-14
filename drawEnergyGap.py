@@ -12,7 +12,7 @@ def main():
         gap_figure_path, N,
         system=FullConnectSystem,
         params={},
-        variable=['p',plist]
+        variables=['p', plist]
     )
 
 

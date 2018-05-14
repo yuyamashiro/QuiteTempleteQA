@@ -15,7 +15,7 @@ def main():
         observables, N, Tlist,
         system= FullConnectSystem,
         params= {},
-        variable= ['p', plist]
+        variables= ['p', plist]
         )
 
 

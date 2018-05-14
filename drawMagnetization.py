@@ -7,12 +7,14 @@ def main():
 
     N = 3
     T = 10
+    plist = [3,5]
 
     draw_magnetization(
         mag_figure_path,
         N,T,
         system=FullConnectSystem,
-        params={'p':3}
+        params={},
+        variables=['p',plist]
     )
 
 
