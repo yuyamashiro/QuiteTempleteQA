@@ -15,4 +15,4 @@ def dynamics_result(system ,N, T, param):
         with open(file_path, 'wb') as f:
             pickle.dump(result, f)
 
-    return result.states[-1]
+    return result.states

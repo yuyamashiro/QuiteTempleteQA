@@ -37,5 +37,8 @@ class FullConnectSystem(QASystem):
         return [[H0, lambda t, args: t / self.T],
                 [Vtf, lambda t, args: (1 - t/self.T)]]
 
+    def mz(self):
+        return 1.0/self.N * sum(self.sz_list)
+
 
 
