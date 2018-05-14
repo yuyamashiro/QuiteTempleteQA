@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from QutipTempQA.utils.utils import *
 from .dynamics import dynamics_result
 
-def draw_observables(observables, N, Tlist, system, params, variables):
+def draw_observables(observables, N, Tlist, system, params, variables, draw=True):
 
 
     # dictionary( values type is 2d array ) of result of observables that is specified
@@ -42,11 +42,23 @@ def draw_observables(observables, N, Tlist, system, params, variables):
 
         for key, value in obs_eachT.items():
             result_obs[key].append(value)
+            save_to_data(key, value, Tlist, N, allparams)
 
     # draw figure of result vs T
-    for obs, path in observables.items():
-        draw_to_figure(obs, path, result_obs[obs], Tlist, N, params, variables)
+    if draw :
+        for obs, path in observables.items():
+            draw_to_figure(obs, path, result_obs[obs], Tlist, N, params, variables)
 
+def save_to_data(observable, result_data, Tlist, N, allparams):
+    T = max(Tlist)
+    if observable == "Residual energy":
+        obs_name = 'Eres/'
+    elif observable == "Probability of mistaking":
+        obs_name = 'MisProb/'
+    else:
+        raise ValueError("Observable {} is not exist".format(obs))
+    data_path = './data/'+ obs_name + filename_from(N, T,allparams) + '.dat'
+    np.savetxt(data_path,np.array([Tlist,result_data]))
 
 def draw_to_figure(observable, path, result_mat, Tlist, N, params, variable):
     T = max(Tlist)
