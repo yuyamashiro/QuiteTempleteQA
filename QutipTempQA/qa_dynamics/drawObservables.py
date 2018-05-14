@@ -25,7 +25,7 @@ def draw_observables(observables, N, Tlist, system, params, variables):
             allparams[variables[0]] = var
             sys = system(T, N, allparams)
             results = dynamics_result(sys, N, T, allparams)
-            final_state = results[0]
+            final_state = results[-1]
 
             correct_energy, correct_state = sys.H(T).eigenstates(eigvals=1)
 
