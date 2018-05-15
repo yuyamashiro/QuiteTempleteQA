@@ -1,15 +1,15 @@
 from QASystemClass import FullConnectSystem
-from QutipTempQA import draw_eres_errorprop
+from QutipTempQA import draw_eres_errorprob
 
 def main():
     figure_paths = {'eres':"./figure/Eres/",
-                    'error_prop':"./figure/ErrorProp/"}
+                    'error_prob':"./figure/ErrorProb/"}
     N = 3
     Tlist = [1,10,50]
 
     plist = [3,5]
 
-    draw_eres_errorprop(
+    draw_eres_errorprob(
         figure_paths, N, Tlist,
         system=FullConnectSystem,
         params={},
