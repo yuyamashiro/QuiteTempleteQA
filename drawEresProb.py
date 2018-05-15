@@ -4,7 +4,7 @@ from QutipTempQA import draw_eres_errorprop
 def main():
     figure_paths = {'eres':"./figure/Eres/",
                     'error_prop':"./figure/ErrorProp/"}
-    N = 10
+    N = 3
     Tlist = [1,10,50]
 
     plist = [3,5]
