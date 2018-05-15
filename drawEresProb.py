@@ -5,7 +5,7 @@ def main():
     figure_paths = {'eres':"./figure/Eres/",
                     'error_prob':"./figure/ErrorProb/"}
     N = 3
-    Tlist = [1,10,50]
+    Tlist = [1,10,30,50]
 
     plist = [3,5]
 

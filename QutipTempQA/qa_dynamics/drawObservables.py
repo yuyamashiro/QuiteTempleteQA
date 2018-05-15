@@ -18,26 +18,31 @@ def draw_eres_errorprob(figure_paths, N, Tlist, system, params, variables, draw=
         if os.path.exists(data_path):
             print('load data of residual energy and error probability at parameters {}'.format(allparams))
             plot_Tlist, eres, errorprob = calc_otherT_eres_errorprob(data_path, N, Tlist, system, allparams)
+            save_to_data(eres, errorprob, plot_Tlist, N, allparams, system.params_name)
+
+            # choice only Tlist data
+            Tlist_arg = [np.where(plot_Tlist == t)[0][0] for t in Tlist]
+            eres = eres[Tlist_arg]
+            errorprob = errorprob[Tlist_arg]
+
         else:
             print('never have been calculated parameters {}. calculating...'.format(allparams))
-            plot_Tlist = Tlist
             eres, errorprob = calc_eres_errorprob(N, Tlist, system, allparams)
+            save_to_data(eres, errorprob, Tlist, N, allparams, system.params_name)
 
         eres_mat.append(eres)
         errorprob_mat.append(errorprob)
 
-        save_to_data(eres, errorprob, Tlist, N, allparams, system.params_name)
 
     if draw:
-        draw_to_figure('Residual energy', figure_paths['eres'], eres_mat, plot_Tlist,
+        draw_to_figure('Residual energy', figure_paths['eres'], eres_mat, Tlist,
                        N, params, variables, system.params_name)
-        draw_to_figure('Error probability', figure_paths['error_prob'], errorprob_mat, plot_Tlist,
+        draw_to_figure('Error probability', figure_paths['error_prob'], errorprob_mat, Tlist,
                        N, params, variables, system.params_name)
 
 
 def calc_otherT_eres_errorprob(data_path, N, Tlist, system, allparams):
     calculated_Tlist, eres, errorprob = np.loadtxt(data_path)
-
     will_calc_Tlist = list(set(Tlist) - set(calculated_Tlist))
 
     new_eres, new_errorprob = calc_eres_errorprob(N, will_calc_Tlist, system, allparams)
