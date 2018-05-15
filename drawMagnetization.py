@@ -1,5 +1,6 @@
 from QASystemClass import FullConnectSystem
 from QutipTempQA import draw_magnetization
+from QutipTempQA import draw_dist_magnetization
 
 
 def main():
@@ -15,6 +16,14 @@ def main():
         system=FullConnectSystem,
         params={},
         variables=['p',plist]
+    )
+
+    dist_figure_path = './figure/mag_dist/'
+    draw_dist_magnetization(
+        dist_figure_path,
+        N,T,
+        system=FullConnectSystem,
+        params={'p':plist[0]}
     )
 
 
