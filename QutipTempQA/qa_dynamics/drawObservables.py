@@ -1,3 +1,4 @@
+import os
 import numpy as np
 from qutip import *
 import matplotlib.pyplot as plt
@@ -6,12 +7,27 @@ from QutipTempQA.utils.utils import *
 from .dynamics import dynamics_result
 
 def draw_observables(observables, N, Tlist, system, params, variables, draw=True):
-
-
     # dictionary( values type is 2d array ) of result of observables that is specified
     result_obs = {}
-    for key,_ in observables.items():
+    calculated_Tlist = {}
+    for key, _ in observables.items():
         result_obs[key] = []
+
+    for var in variables[1]:
+        allparams = params
+        allparams[variables[0]] = var
+
+        for obs,_ in observables.items():
+            obs_results = load_data(obs,N,allparams)
+            if obs_results is not None:
+                calculated_Tlist[obs] = obs_results[0]
+                result_obs[key] = obs_results[1]
+
+                will_calc_Tlist = list(set(Tlist) - set(calculated_Tlist))
+                
+
+
+
 
     # result_obs have 2d-array(matrix) 1-axis : each T, 2-axis : each variable
     # follow two for statement is doing stuck result to result_obs
@@ -23,6 +39,7 @@ def draw_observables(observables, N, Tlist, system, params, variables, draw=True
         for T in Tlist:
             allparams = params
             allparams[variables[0]] = var
+
             sys = system(T, N, allparams)
             results = dynamics_result(sys, N, T, allparams)
             final_state = results[-1]
@@ -50,15 +67,29 @@ def draw_observables(observables, N, Tlist, system, params, variables, draw=True
             draw_to_figure(obs, path, result_obs[obs], Tlist, N, params, variables)
 
 def save_to_data(observable, result_data, Tlist, N, allparams):
-    T = max(Tlist)
     if observable == "Residual energy":
         obs_name = 'Eres/'
     elif observable == "Probability of mistaking":
         obs_name = 'MisProb/'
     else:
         raise ValueError("Observable {} is not exist".format(obs))
-    data_path = './data/'+ obs_name + filename_from(N, T,allparams) + '.dat'
+    data_path = './data/'+ obs_name + filename_from(N, T='_',param=allparams) + '.dat'
     np.savetxt(data_path,np.array([Tlist,result_data]))
+
+
+def load_data(observable, N, allparams):
+    if observable == "Residual energy":
+        obs_name = 'Eres/'
+    elif observable == "Probability of mistaking":
+        obs_name = 'MisProb/'
+    else:
+        raise ValueError("Observable {} is not exist".format(obs))
+    data_path = './data/' + obs_name + filename_from(N, T='_', param=allparams) + '.dat'
+    if os.path.exists(data_path):
+        return np.loadtxt(data_path)
+    else:
+        return None
+
 
 def draw_to_figure(observable, path, result_mat, Tlist, N, params, variable):
     T = max(Tlist)
