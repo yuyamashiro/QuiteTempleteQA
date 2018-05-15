@@ -3,6 +3,9 @@ from qutip import *
 from QutipTempQA import QASystem
 
 class FullConnectSystem(QASystem):
+
+    params_name = ['p']
+
     def __init__(self, T, N, param):
 
         self.T = T

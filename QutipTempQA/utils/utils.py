@@ -11,8 +11,8 @@ def plot_setting(font_size=8):
     plt.rcParams['axes.linewidth'] = 1.0  # 軸の線幅edge linewidth。囲みの太さ
 
 
-def filename_from(N, T, param):
+def filename_from(N, T, param, names):
     filename = "N{}T{}".format(N,T)
-    for key,value in param.items():
-        filename += key+str(value).replace(".","_")
+    for key in names:
+        filename += key+str(param[key]).replace(".","_")
     return filename

@@ -19,7 +19,7 @@ def draw_magnetization(save_path, N, T, system, params, variables):
         tlist, mlist = draw_operator(results, sys.mz(), T)
         plt.plot(tlist, mlist,label=variables[0] +'=' + str(var))
 
-    figure_path = save_path + filename_from(N, T, params) + '.pdf'
+    figure_path = save_path + filename_from(N, T, params, system.params_name) + '.pdf'
     plt.legend()
     plt.savefig(figure_path)
 

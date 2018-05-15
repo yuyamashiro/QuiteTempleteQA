@@ -14,7 +14,7 @@ def draw_eres_errorprop(figure_paths, N, Tlist, system, params, variables, draw=
     for var in variables[1]:
         allparams = params
         allparams[variables[0]] = var
-        data_path = "./data/eres_errorprop/" + filename_from(N, '_', allparams) + ".dat"
+        data_path = "./data/eres_errorprop/" + filename_from(N, '_', allparams, names=system.params_name) + ".dat"
         if os.path.exists(data_path):
             print('load data of residual energy and error probability at parameters {}'.format(allparams))
             plot_Tlist, eres, errorprop = calc_otherT_eres_errorprop(data_path, N, Tlist, system, allparams)
@@ -26,11 +26,13 @@ def draw_eres_errorprop(figure_paths, N, Tlist, system, params, variables, draw=
         eres_mat.append(eres)
         errorprop_mat.append(errorprop)
 
-        save_to_data(eres, errorprop, Tlist, N, allparams)
+        save_to_data(eres, errorprop, Tlist, N, allparams, system.params_name)
 
     if draw:
-        draw_to_figure('Residual energy', figure_paths['eres'], eres_mat, plot_Tlist, N, params, variables)
-        draw_to_figure('Error probability', figure_paths['error_prop'], errorprop_mat, plot_Tlist, N, params, variables)
+        draw_to_figure('Residual energy', figure_paths['eres'], eres_mat, plot_Tlist,
+                       N, params, variables, system.params_name)
+        draw_to_figure('Error probability', figure_paths['error_prop'], errorprop_mat, plot_Tlist,
+                       N, params, variables, system.params_name)
 
 
 def calc_otherT_eres_errorprop(data_path, N, Tlist, system, allparams):
@@ -65,14 +67,14 @@ def calc_eres_errorprop(N, Tlist, system, allparams):
 
 
 
-def save_to_data(eres, errorprop, Tlist, N, allparams):
-    data_path = './data/eres_errorprop/' + filename_from(N, T='_',param=allparams) + '.dat'
+def save_to_data(eres, errorprop, Tlist, N, allparams, params_name):
+    data_path = './data/eres_errorprop/' + filename_from(N, T='_', param=allparams, names=params_name) + '.dat'
     np.savetxt(data_path,np.array([Tlist,eres, errorprop]))
 
 
-def draw_to_figure(observable, path, result_mat, Tlist, N, params, variable):
+def draw_to_figure(observable, path, result_mat, Tlist, N, params, variable, params_name):
     T = int(max(Tlist))
-    figure_path = path + filename_from(N, T, params) + '.pdf'
+    figure_path = path + filename_from(N, T, params, names=params_name) + '.pdf'
 
     plt.figure()
     plot_setting()
