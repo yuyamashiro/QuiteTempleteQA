@@ -82,9 +82,9 @@ def draw_to_figure(observable, path, result_mat, Tlist, N, params, variable, par
     figure_path = path + filename_from(N, T, params, names=params_name) + '.pdf'
 
     plt.figure()
-    plot_setting()
-    plt.xlabel("$T_{Q}$ : Annealing time")
-    plt.ylabel(observable)
+    plot_setting(font_size=10)
+    plt.xlabel("$T_{Q}$ : Annealing time", fontsize=12)
+    plt.ylabel(observable, fontsize=12)
     plt.xscale('log')
     plt.yscale('log')
 
@@ -92,7 +92,7 @@ def draw_to_figure(observable, path, result_mat, Tlist, N, params, variable, par
         plt.plot(Tlist, result, label=variable[0]+"="+str(value))
 
     plt.legend()
-    plt.savefig(figure_path)
+    plt.savefig(figure_path, bbox_inches="tight", pad_inches=0.0)
 
 
 

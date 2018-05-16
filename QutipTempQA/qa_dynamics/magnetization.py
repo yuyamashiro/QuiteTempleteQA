@@ -8,9 +8,9 @@ from QutipTempQA.utils.utils import filename_from
 
 def draw_magnetization(save_path, N, T, system, params, variables):
 
-    plot_setting()
-    plt.xlabel('t')
-    plt.ylabel('magnetization')
+    plot_setting(font_size=10)
+    plt.xlabel('t',fontsize=12)
+    plt.ylabel('magnetization',fontsize=12)
 
     for var in variables[1]:
         params[variables[0]] = var
@@ -21,7 +21,7 @@ def draw_magnetization(save_path, N, T, system, params, variables):
 
     figure_path = save_path + filename_from(N, T, params, system.params_name) + '.pdf'
     plt.legend()
-    plt.savefig(figure_path)
+    plt.savefig(figure_path, bbox_inches="tight", pad_inches=0.1)
 
 
 def draw_operator(results,operator, T, dt=0.01):
@@ -33,9 +33,9 @@ def draw_operator(results,operator, T, dt=0.01):
 
 def draw_dist_magnetization(save_path, N, T, system, params, bar_width=0.3):
     plt.figure()
-    plot_setting()
-    plt.xlabel('magnetization')
-    plt.ylabel('probability')
+    plot_setting(font_size=10)
+    plt.xlabel('magnetization',fontsize=12)
+    plt.ylabel('probability',fontsize=12)
 
     sys = system(T, N, params)
     mz,m_basis = sys.mz().eigenstates()
@@ -53,4 +53,4 @@ def draw_dist_magnetization(save_path, N, T, system, params, bar_width=0.3):
     plt.bar(mlist, prob_list, width=bar_width,align="center")
 
     figure_path = save_path + filename_from(N, T, params, system.params_name) + '.pdf'
-    plt.savefig(figure_path)
+    plt.savefig(figure_path, bbox_inches="tight", pad_inches=0.0)
