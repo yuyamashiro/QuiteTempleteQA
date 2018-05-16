@@ -79,7 +79,7 @@ def draw_to_figure(observable, path, result_mat, Tlist, N, params, variable, par
 
     plt.figure()
     plot_setting(font_size=10)
-    plt.xlabel("$T_{Q}$ : Annealing time", fontsize=12)
+    plt.xlabel("$T_{QA}$ : Annealing time", fontsize=12)
     plt.ylabel(observable, fontsize=12)
     plt.xscale('log')
     plt.yscale('log')
