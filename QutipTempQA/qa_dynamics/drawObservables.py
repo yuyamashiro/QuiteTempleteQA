@@ -18,7 +18,8 @@ def draw_eres_errorprob(figure_paths, N, Tlist, system, params, variables, draw=
         if os.path.exists(data_path):
             print('load data of residual energy and error probability at parameters {}'.format(allparams))
             plot_Tlist, eres, errorprob = calc_otherT_eres_errorprob(data_path, N, Tlist, system, allparams)
-            save_to_data(eres, errorprob, plot_Tlist, N, allparams, system.params_name)
+
+            np.savetxt(data_path, [plot_Tlist, eres, errorprob])
 
             # choice only Tlist data
             Tlist_arg = [np.where(plot_Tlist == t)[0][0] for t in Tlist]
@@ -28,7 +29,7 @@ def draw_eres_errorprob(figure_paths, N, Tlist, system, params, variables, draw=
         else:
             print('never have been calculated parameters {}. calculating...'.format(allparams))
             eres, errorprob = calc_eres_errorprob(N, Tlist, system, allparams)
-            save_to_data(eres, errorprob, Tlist, N, allparams, system.params_name)
+            np.savetxt(data_path, np.array([Tlist, eres, errorprob]))
 
         eres_mat.append(eres)
         errorprob_mat.append(errorprob)
@@ -61,8 +62,7 @@ def calc_eres_errorprob(N, Tlist, system, allparams):
     errorprob = []
     for T in Tlist:
         sys = system(T, N, allparams)
-        results = dynamics_result(sys, N, T, allparams)
-        final_state = results[-1]
+        final_state = dynamics_result(sys, N, T, allparams)
         correct_energy, correct_state = sys.H(T).eigenstates(eigvals=1)
 
         eres.append(1.0 / sys.N * np.abs(expect(sys.H(T), final_state) - correct_energy[0]))
@@ -71,10 +71,6 @@ def calc_eres_errorprob(N, Tlist, system, allparams):
     return eres, errorprob
 
 
-
-def save_to_data(eres, errorprob, Tlist, N, allparams, params_name):
-    data_path = './data/eres_errorprob/' + filename_from(N, T='_', param=allparams, names=params_name) + '.dat'
-    np.savetxt(data_path, np.array([Tlist, eres, errorprob]))
 
 
 def draw_to_figure(observable, path, result_mat, Tlist, N, params, variable, params_name):
