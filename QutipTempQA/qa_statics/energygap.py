@@ -35,6 +35,8 @@ def draw_energygap(fig_path, N, system, params, variables):
 
         plt.plot(tlist, gap, label=variables[0] + '=' + str(var))
     plt.legend()
+    plt.xlabel('s', fontsize=12)
+    plt.ylabel('energy gap', fontsize=12)
     plt.savefig(fig_path+'gap' + filename_from(N,1,params,system.params_name) + '.pdf')
 
 
