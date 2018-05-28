@@ -21,7 +21,8 @@ def main():
     for p in plist:
         params = {'p':p}
         eres_error.calculation(params=params, label='p={}'.format(p))
-    eres_error.draw_results(figure_paths=figure_paths)
+
+    eres_error.draw_results(figure_paths=figure_paths, linetype=['--','-'])
 
 
 if __name__ == '__main__':

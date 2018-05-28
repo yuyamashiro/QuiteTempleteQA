@@ -37,12 +37,14 @@ class DynamicsEresError:
         self.errorprob_mat.append(errorprob)
         self.label_list.append(label)
 
-    def draw_results(self,figure_paths):
+    def draw_results(self, figure_paths, linetype=None):
+        if linetype is None:
+            linetype = ['-'] * len(self.eres_mat)
         print("draw and save as figure")
-        self.draw_save_to('Residual energy', figure_paths['eres'], self.eres_mat, self.Tlist, self.label_list)
-        self.draw_save_to('Error probability', figure_paths['error_prob'], self.errorprob_mat, self.Tlist, self.label_list)
+        self.draw_save_to('Residual energy', figure_paths['eres'], self.eres_mat, self.Tlist, self.label_list, linetype)
+        self.draw_save_to('Error probability', figure_paths['error_prob'], self.errorprob_mat, self.Tlist, self.label_list, linetype)
 
-    def draw_save_to(self, obs_name, fig_path, result_mat, Tlist, label_list):
+    def draw_save_to(self, obs_name, fig_path, result_mat, Tlist, label_list, linetype):
 
         plt.figure()
         plot_setting(font_size=10)
@@ -51,8 +53,8 @@ class DynamicsEresError:
         plt.xscale('log')
         plt.yscale('log')
 
-        for label, result in zip(label_list, result_mat):
-            plt.plot(Tlist, result, label=label)
+        for label, result, lt in zip(label_list, result_mat, linetype):
+            plt.plot(Tlist, result, lt, label=label)
 
         plt.legend()
         plt.savefig(fig_path, bbox_inches="tight", pad_inches=0.0)
