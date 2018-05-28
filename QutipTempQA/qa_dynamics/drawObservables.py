@@ -6,6 +6,59 @@ import matplotlib.pyplot as plt
 from QutipTempQA.utils.utils import *
 from .dynamics import dynamics_result
 
+class DynamicsEresError:
+    def __init__(self, system, N, Tlist):
+        self.system = system
+        self.N = N
+        self.Tlist = Tlist
+        self.eres_mat = []
+        self.errorprob_mat = []
+        self.label_list = []
+
+    def calculation(self, params, label):
+        data_path = "./data/eres_errorprob/" + filename_from(self.N, '_', params, names=self.system.params_name) + ".dat"
+        if os.path.exists(data_path):
+            print('load data of residual energy and error probability at parameters {}'.format(params))
+            plot_Tlist, eres, errorprob = calc_otherT_eres_errorprob(data_path, self.N, self.Tlist, self.system, params)
+
+            np.savetxt(data_path, [plot_Tlist, eres, errorprob])
+
+            # choice only Tlist data
+            Tlist_arg = [np.where(plot_Tlist == t)[0][0] for t in self.Tlist]
+            eres = eres[Tlist_arg]
+            errorprob = errorprob[Tlist_arg]
+
+        else:
+            print('never have been calculated parameters {}. calculating...'.format(params))
+            eres, errorprob = calc_eres_errorprob(self.N, self.Tlist, self.system, params)
+            np.savetxt(data_path, np.array([self.Tlist, eres, errorprob]))
+
+        self.eres_mat.append(eres)
+        self.errorprob_mat.append(errorprob)
+        self.label_list.append(label)
+
+    def draw_results(self,figure_paths):
+        print("draw and save as figure")
+        self.draw_save_to('Residual energy', figure_paths['eres'], self.eres_mat, self.Tlist, self.label_list)
+        self.draw_save_to('Error probability', figure_paths['error_prob'], self.errorprob_mat, self.Tlist, self.label_list)
+
+    def draw_save_to(self, obs_name, fig_path, result_mat, Tlist, label_list):
+
+        plt.figure()
+        plot_setting(font_size=10)
+        plt.xlabel("$T_{QA}$ : Annealing time", fontsize=12)
+        plt.ylabel(obs_name, fontsize=12)
+        plt.xscale('log')
+        plt.yscale('log')
+
+        for label, result in zip(label_list, result_mat):
+            plt.plot(Tlist, result, label=label)
+
+        plt.legend()
+        plt.savefig(fig_path, bbox_inches="tight", pad_inches=0.0)
+
+
+
 
 def draw_eres_errorprob(figure_paths, N, Tlist, system, params, variables, draw=True):
 
