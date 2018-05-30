@@ -44,4 +44,28 @@ class FullConnectSystem(QASystem):
         return 1.0/self.N * sum(self.sz_list)
 
 
+class BlockedSystem(QASystem):
+    params_name = ['p']
+
+    def __init__(self,T,N,param):
+        self.T = T
+        self.N = N
+        self.p = param['p']
+
+        self.sz = jmat(0.5 * N, 'z')
+        self.sx = jmat(0.5 * N, 'x')
+
+    def _dynamic_H(self):
+        H0 = -self.N*(2.0/self.N * self.sz)**self.p
+        Vtf = -self.sx
+
+        return [[H0, lambda t, args: t / self.T],
+                [Vtf, lambda t, args: (1 - t / self.T)]]
+
+    def mz(self):
+        return 2.0/self.N * self.sz
+
+
+
+
 

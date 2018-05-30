@@ -22,7 +22,7 @@ class DynamicsEresError:
             print('load data of residual energy and error probability at parameters {}'.format(params))
             plot_Tlist, eres, errorprob, tts = calc_otherT_eres_errorprob(data_path, self.N, self.Tlist, self.system, params)
 
-            np.savetxt(data_path, [plot_Tlist, eres, errorprob])
+            np.savetxt(data_path, [plot_Tlist, eres, errorprob, tts])
 
             # choice only Tlist data
             Tlist_arg = [np.where(plot_Tlist == t)[0][0] for t in self.Tlist]
@@ -33,7 +33,7 @@ class DynamicsEresError:
         else:
             print('never have been calculated parameters {}. calculating...'.format(params))
             eres, errorprob, tts = calc_eres_errorprob(self.N, self.Tlist, self.system, params)
-            np.savetxt(data_path, np.array([self.Tlist, eres, errorprob]))
+            np.savetxt(data_path, np.array([self.Tlist, eres, errorprob, tts]))
 
         self.eres_mat.append(eres)
         self.errorprob_mat.append(errorprob)
