@@ -1,4 +1,5 @@
 from QASystemClass import FullConnectSystem
+from QASystemClass import BlockedSystem
 from QutipTempQA import draw_energygap, draw_min_gap
 
 
@@ -18,8 +19,8 @@ def main():
     mingap_fig_path = './figure/mingap/'
     draw_min_gap(
         mingap_fig_path,
-        Nlist=[3,4],
-        system=FullConnectSystem,
+        Nlist=[3,5,10,15,20,30,40,50,55],
+        system=BlockedSystem,
         params={},
         variables=['p',plist]
     )

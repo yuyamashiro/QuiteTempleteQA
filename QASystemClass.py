@@ -57,7 +57,7 @@ class BlockedSystem(QASystem):
 
     def _dynamic_H(self):
         H0 = -self.N*(2.0/self.N * self.sz)**self.p
-        Vtf = -self.sx
+        Vtf = -2.0*self.sx
 
         return [[H0, lambda t, args: t / self.T],
                 [Vtf, lambda t, args: (1 - t / self.T)]]
