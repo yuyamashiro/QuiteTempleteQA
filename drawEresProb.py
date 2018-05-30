@@ -4,7 +4,8 @@ from QutipTempQA import DynamicsEresError
 
 def main():
     figure_paths = {'eres':"./figure/Eres/test.pdf",
-                    'error_prob':"./figure/ErrorProb/jj.pdf"}
+                    'error_prob':"./figure/ErrorProb/jj.pdf",
+                    'tts':'./figure/TTS/tts.pdf'}
     N = 3
     Tlist = [1,10,30,50]
 
