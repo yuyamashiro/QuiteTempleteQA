@@ -48,11 +48,12 @@ class DynamicsEresError:
         self.draw_save_to('Error probability', figure_paths['error_prob'], self.errorprob_mat, self.Tlist, self.label_list, linetype)
         self.draw_save_to('TTS', figure_paths['tts'], self.tts_mat, self.Tlist, self.label_list, linetype)
 
-    def draw_save_to(self, obs_name, fig_path, result_mat, Tlist, label_list, linetype):
-
+    def draw_save_to(self, obs_name, fig_path, result_mat, Tlist, label_list, linetype, xlabel=None):
+        if xlabel is None:
+            xlabel = "$\\tau$ : Annealing time"
         plt.figure()
         plot_setting(font_size=10)
-        plt.xlabel("$T_{QA}$ : Annealing time", fontsize=12)
+        plt.xlabel(xlabel, fontsize=12)
         plt.ylabel(obs_name, fontsize=12)
         plt.xscale('log')
         plt.yscale('log')

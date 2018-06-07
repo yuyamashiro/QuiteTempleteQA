@@ -26,16 +26,28 @@ def main():
     #
     # eres_error.draw_results(figure_paths=figure_paths, linetype=['--','-'])
 
-    N = 45
-    figure_paths = {'eres': "./figure/Eres/eres_N{}.pdf".format(N),
-                    'error_prob': "./figure/ErrorProb/error_N{}.pdf".format(N),
-                    'tts': './figure/TTS/tts_N{}.pdf'.format(N)}
-    eres_error = DynamicsEresError(BlockedSystem, N, Tlist)
-    for p in plist:
-        params = {'p': p}
-        eres_error.calculation(params=params, label='p={}'.format(p))
+    # N = 45
+    # figure_paths = {'eres': "./figure/Eres/eres_N{}.pdf".format(N),
+    #                 'error_prob': "./figure/ErrorProb/error_N{}.pdf".format(N),
+    #                 'tts': './figure/TTS/tts_N{}.pdf'.format(N)}
+    # eres_error = DynamicsEresError(BlockedSystem, N, Tlist)
+    # for p in plist:
+    #     params = {'p': p}
+    #     eres_error.calculation(params=params, label='p={}'.format(p))
+    #
+    # eres_error.draw_results(figure_paths=figure_paths, linetype=['--', '-'])
 
-    eres_error.draw_results(figure_paths=figure_paths, linetype=['--', '-'])
+    # N scaling
+    p = 3
+    figure_paths = {'eres': "./figure/Eres/eres_p{}.pdf".format(p),
+                    'error_prob': "./figure/ErrorProb/error_p{}.pdf".format(p),
+                    'tts': './figure/TTS/tts_p{}.pdf'.format(p)}
+    Nlist = [2, 3, 5]
+    Tlist
+    params = {'p',p}
+    for N in Nlist:
+        eres_erro = DynamicsEresError(FullConnectSystem, N, Tlist)
+
 
 
 if __name__ == '__main__':
