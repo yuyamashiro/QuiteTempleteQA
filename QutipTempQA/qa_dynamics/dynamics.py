@@ -22,6 +22,6 @@ def dynamics_result(system ,N, T, param, only_final=True):
             pickle.dump(final_state, f)
 
         if not only_final:
-            return result.states
+            return result
 
     return final_state

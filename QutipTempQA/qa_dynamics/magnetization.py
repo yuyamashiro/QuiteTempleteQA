@@ -23,7 +23,7 @@ def draw_magnetization(save_path, N, T, system, params, variables):
         else:
             print('**** calculate data of time evolution of magnetization ****')
             sys = system(T, N, params)
-            results = dynamics_result(sys, N, T, params, only_final=False)
+            results = dynamics_result(sys, N, T, params, only_final=False).states
             tlist, mlist = calc_operator(results, sys.mz(), T)
             np.savetxt(data_path, [tlist, mlist])
 
