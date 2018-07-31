@@ -4,10 +4,18 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from QutipTempQA.utils import utils
-from calculation import vs_N, occ
+from calculation import vs_N, occ, eres_prob
 
 def main(arg):
-    if arg[0] == 'vsN':
+    if arg[0] == 'eres_prob':
+        data_path, param_name = eres_prob()
+        Tlist, eres, errorprob, tts = np.loadtxt(data_path)
+
+        eresprob_draw(fig_path='./figure/Eres/eres_'+ param_name + '.pdf', tlist=Tlist, data=eres)
+        eresprob_draw(fig_path='./figure/ErrorProb/eprob_' + param_name + '.pdf', tlist=Tlist, data=errorprob)
+        eresprob_draw(fig_path='./figure/TTS/tts_' + param_name + '.pdf', tlist=Tlist, data=tts)
+
+    elif arg[0] == 'vsN':
         data_path = vs_N()
         Nlist, eres, error_p = np.loadtxt(data_path)
 
@@ -29,6 +37,12 @@ def main(arg):
         )
         print('--done--')
 
+def eresprob_draw(fig_path, tlist, data):
+    utils.plot_setting(font_size=10)
+    plt.plot(tlist, data)
+    plt.xscale('log')
+    plt.yscale('log')
+    plt.savefig(fig_path)
 
 
 def occ_draw(fig_path, tlist, evals_mat, P_mat, M, N, file_name):

@@ -11,9 +11,8 @@ def main(args):
     N = 100
     p = 3
 
-    if args[0] == 'dynamics':
-        Tlist = [1,5,10]
-        dynamics(system_class, N, Tlist, p)
+    if args[0] == 'eres_prob':
+        eres_prob()
     elif args[0] == 'energygap':
         draw_energygap(fig_path='./figure/minGap/',
                        system=system_class,
@@ -30,17 +29,14 @@ def main(args):
     else:
         raise ValueError('{} is not defined.'.format(args[0]))
 
-
-def dynamics(system_class, N, Tlist, p):
-    eres_error = DynamicsEresError(system_class, N, Tlist)
+def eres_prob():
+    N = 50
+    p = 3
+    Tlist = [1, 3, 5, 10, 30, 50, 100]
     params = {'p': p}
-    eres_error.calculation(params=params, label='up:{}'.format(up))
-
-    observables = {"eres": "./figure/eres/eres_N{}p{}".format(N, p) + ".pdf",
-                   "error_prob": "./figure/errorprob/error_N{}p{}".format(N, p) + ".pdf",
-                   "tts": "./figure/TTS/tts_N{}p{}".format(N, p) + ".pdf"}
-
-    eres_error.draw_results(observables)
+    eres_error = DynamicsEresError(BlockedSystem, N, Tlist)
+    eres_error.calculation(params=params, label='p={}'.format(p))
+    return eres_error.data_path, 'N{}p{}'.format(N,p)
 
 def occ():
     p = 3

@@ -15,14 +15,15 @@ class DynamicsEresError:
         self.errorprob_mat = []
         self.tts_mat = []
         self.label_list = []
+        self.data_path = ''
 
     def calculation(self, params, label):
-        data_path = "./data/eres_errorprob/" + filename_from(self.N, '_', params, names=self.system.params_name) + ".dat"
-        if os.path.exists(data_path):
-            print('load data of {}'.format(data_path))
-            plot_Tlist, eres, errorprob, tts = calc_otherT_eres_errorprob(data_path, self.N, self.Tlist, self.system, params)
+        self.data_path = "./data/eres_errorprob/" + filename_from(self.N, '_', params, names=self.system.params_name) + ".dat"
+        if os.path.exists(self.data_path):
+            print('load data of {}'.format(self.data_path))
+            plot_Tlist, eres, errorprob, tts = calc_otherT_eres_errorprob(self.data_path, self.N, self.Tlist, self.system, params)
 
-            np.savetxt(data_path, [plot_Tlist, eres, errorprob, tts])
+            np.savetxt(self.data_path, [plot_Tlist, eres, errorprob, tts])
 
             # choice only Tlist data
             Tlist_arg = [np.where(plot_Tlist == t)[0][0] for t in self.Tlist]
@@ -33,7 +34,7 @@ class DynamicsEresError:
         else:
             print('never have been calculated parameters {}. calculating...'.format(params))
             eres, errorprob, tts = calc_eres_errorprob(self.N, self.Tlist, self.system, params)
-            np.savetxt(data_path, np.array([self.Tlist, eres, errorprob, tts]))
+            np.savetxt(self.data_path, np.array([self.Tlist, eres, errorprob, tts]))
 
         self.eres_mat.append(eres)
         self.errorprob_mat.append(errorprob)
