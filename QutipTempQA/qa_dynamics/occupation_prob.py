@@ -18,24 +18,26 @@ class OccupationProbability:
 
         self.file_name = ''
 
+        self.evals_data_path = ''
+        self.p_data_path = ''
+
     def calculation(self, params, M):
 
         self.file_name = filename_from(self.N, self.T,
                                        param=params, names=self.system.params_name) + 'M_' + str(M)
 
-        evals_data_path = './data/occ_prob/'+'evals_'+self.file_name+'.dat'
-        p_data_path = './data/occ_prob/' + 'p_' + self.file_name + '.dat'
+        self.evals_data_path = './data/occ_prob/'+'evals_'+self.file_name+'.dat'
+        self.p_data_path = './data/occ_prob/' + 'p_' + self.file_name + '.dat'
 
-        if os.path.exists(evals_data_path) and os.path.exists(p_data_path):
+        if os.path.exists(self.evals_data_path) and os.path.exists(self.p_data_path):
             print('success load {}'.format(self.file_name))
-            self.evals_mat = np.loadtxt(evals_data_path)
-            self.P_mat = np.loadtxt(p_data_path)
+            self.evals_mat = np.loadtxt(self.evals_data_path)
+            self.P_mat = np.loadtxt(self.p_data_path)
         else:
             print('*** calculate ***')
             self.calc_evals_Pmat(params, M)
-            np.savetxt(evals_data_path, self.evals_mat)
-            np.savetxt(p_data_path, self.P_mat)
-
+            np.savetxt(self.evals_data_path, self.evals_mat)
+            np.savetxt(self.p_data_path, self.P_mat)
 
 
     def calc_evals_Pmat(self, params, M):
@@ -61,31 +63,31 @@ class OccupationProbability:
         self.evals_mat = np.array(self.evals_mat).T
         self.P_mat = np.array(self.P_mat).T
 
-    def draw(self, fig_path):
+    def draw(self, fig_path, tlist, evals_mat, P_mat, M, N, file_name):
 
         plot_setting(font_size=10)
 
         # first draw thin lines outlining the energy spectrum
-        for n in range(len(self.evals_mat)):
+        for n in range(len(evals_mat)):
             ls,lw = ('b', 1) if n == 0 else ('k', 0.25)
-            plt.plot(self.tlist, self.evals_mat[n], ls, lw=lw)
+            plt.plot(tlist, evals_mat[n], ls, lw=lw)
 
         # second, draw line that encode the occupation probability of each state in
         # its linewidth. thicker line => high occupation probability.
-        for idx in range(len(self.tlist)-1):
-            for n in range(len(self.P_mat)):
-                lw = 0.5 + 4*self.P_mat[n,idx]
+        for idx in range(len(tlist)-1):
+            for n in range(len(P_mat)):
+                lw = 0.5 + 4*P_mat[n,idx]
                 if lw > 0.55:
-                    plt.plot([self.tlist[idx],self.tlist[idx+1]],
-                              [self.evals_mat[n, idx], self.evals_mat[n, idx+1]],
+                    plt.plot([tlist[idx], tlist[idx+1]],
+                              [evals_mat[n, idx], evals_mat[n, idx+1]],
                                'r', lw=lw)
 
         plt.ylabel('Energies')
         plt.xlabel('t')
-        plt.title('Energyspectrum ({} lowest values) of {} spins.\n'.format(self.M, self.N)
+        plt.title('Energyspectrum ({} lowest values) of {} spins.\n'.format(M, N)
                   + 'The occupation probabilities are encode in the red line widths.')
 
-        file_name = fig_path + self.file_name + '.pdf'
+        file_name = fig_path + file_name + '.pdf'
         plt.savefig(file_name)
 
 

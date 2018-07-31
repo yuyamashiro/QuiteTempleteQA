@@ -4,6 +4,7 @@ import numpy as np
 from QutipTempQA import DynamicsEresError, draw_energygap, OccupationProbability
 from QASystemClass import BlockedSystem, FullConnectSystem
 
+SYSTEM = BlockedSystem
 
 def main(args):
     system_class = BlockedSystem
@@ -40,6 +41,18 @@ def dynamics(system_class, N, Tlist, p):
                    "tts": "./figure/TTS/tts_N{}p{}".format(N, p) + ".pdf"}
 
     eres_error.draw_results(observables)
+
+def occ():
+    p = 3
+    N = 10
+    T = 10
+    M = 5
+    params = {'p': p}
+    occ_prob = OccupationProbability(SYSTEM, N, T)
+    occ_prob.calculation(params=params, M=M)
+
+    return occ_prob.tlist, occ_prob.evals_data_path, occ_prob.p_data_path, \
+           {'N': N, 'T': T, 'M': M, 'params': params}, occ_prob.file_name
 
 def vs_N():
     system_class = BlockedSystem
