@@ -85,7 +85,7 @@ class OccupationProbability:
         plt.title('Energyspectrum ({} lowest values) of {} spins.\n'.format(self.M, self.N)
                   + 'The occupation probabilities are encode in the red line widths.')
 
-        file_name = fig_path + self.file_name
+        file_name = fig_path + self.file_name + '.pdf'
         plt.savefig(file_name)
 
 

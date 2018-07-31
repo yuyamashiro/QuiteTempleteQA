@@ -19,7 +19,7 @@ class DynamicsEresError:
     def calculation(self, params, label):
         data_path = "./data/eres_errorprob/" + filename_from(self.N, '_', params, names=self.system.params_name) + ".dat"
         if os.path.exists(data_path):
-            print('load data of residual energy and error probability at parameters {}'.format(params))
+            print('load data of {}'.format(data_path))
             plot_Tlist, eres, errorprob, tts = calc_otherT_eres_errorprob(data_path, self.N, self.Tlist, self.system, params)
 
             np.savetxt(data_path, [plot_Tlist, eres, errorprob, tts])
@@ -77,7 +77,7 @@ def draw_eres_errorprob(figure_paths, N, Tlist, system, params, variables, draw=
         allparams[variables[0]] = var
         data_path = "./data/eres_errorprob/" + filename_from(N, '_', allparams, names=system.params_name) + ".dat"
         if os.path.exists(data_path):
-            print('load data of residual energy and error probability at parameters {}'.format(allparams))
+            print('load data of {}'.format(data_path))
             plot_Tlist, eres, errorprob, tts = calc_otherT_eres_errorprob(data_path, N, Tlist, system, allparams)
 
             np.savetxt(data_path, [plot_Tlist, eres, errorprob, tts])
@@ -109,6 +109,8 @@ def draw_eres_errorprob(figure_paths, N, Tlist, system, params, variables, draw=
 
 def calc_otherT_eres_errorprob(data_path, N, Tlist, system, allparams):
     calculated_Tlist, eres, errorprob, tts = np.loadtxt(data_path)
+    if not hasattr(calculated_Tlist, '__iter__'):
+        calculated_Tlist = [calculated_Tlist]
     will_calc_Tlist = list(set(Tlist) - set(calculated_Tlist))
 
     new_eres, new_errorprob, new_tts = calc_eres_errorprob(N, will_calc_Tlist, system, allparams)
