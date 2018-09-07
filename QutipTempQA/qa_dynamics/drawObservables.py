@@ -1,7 +1,6 @@
 import os
 import numpy as np
 from qutip import *
-import matplotlib.pyplot as plt
 
 from QutipTempQA.utils.utils import *
 from .dynamics import dynamics_result
@@ -15,15 +14,15 @@ class DynamicsEresError:
         self.errorprob_mat = []
         self.tts_mat = []
         self.label_list = []
-        self.data_path = ''
+        self.data_paths = []
 
     def calculation(self, params, label):
-        self.data_path = "./data/eres_errorprob/" + filename_from(self.N, '_', params, names=self.system.params_name) + ".dat"
-        if os.path.exists(self.data_path):
-            print('load data of {}'.format(self.data_path))
-            plot_Tlist, eres, errorprob, tts = calc_otherT_eres_errorprob(self.data_path, self.N, self.Tlist, self.system, params)
+        data_path = "./data/eres_errorprob/" + filename_from(self.N, '_', params, names=self.system.params_name) + ".dat"
+        if os.path.exists(data_path):
+            print('load data of {}'.format(data_path))
+            plot_Tlist, eres, errorprob, tts = calc_otherT_eres_errorprob(data_path, self.N, self.Tlist, self.system, params)
 
-            np.savetxt(self.data_path, [plot_Tlist, eres, errorprob, tts])
+            np.savetxt(data_path, [plot_Tlist, eres, errorprob, tts])
 
             # choice only Tlist data
             Tlist_arg = [np.where(plot_Tlist == t)[0][0] for t in self.Tlist]
@@ -34,78 +33,13 @@ class DynamicsEresError:
         else:
             print('never have been calculated parameters {}. calculating...'.format(params))
             eres, errorprob, tts = calc_eres_errorprob(self.N, self.Tlist, self.system, params)
-            np.savetxt(self.data_path, np.array([self.Tlist, eres, errorprob, tts]))
+            np.savetxt(data_path, np.array([self.Tlist, eres, errorprob, tts]))
 
+        self.data_paths.append(data_path)
         self.eres_mat.append(eres)
         self.errorprob_mat.append(errorprob)
         self.tts_mat.append(tts)
         self.label_list.append(label)
-
-    def draw_results(self, figure_paths, linetype=None):
-        if linetype is None:
-            linetype = ['-'] * len(self.eres_mat)
-        print("draw and save as figure")
-        self.draw_save_to('Residual energy', figure_paths['eres'], self.eres_mat, self.Tlist, self.label_list, linetype)
-        self.draw_save_to('Error probability', figure_paths['error_prob'], self.errorprob_mat, self.Tlist, self.label_list, linetype)
-        self.draw_save_to('TTS', figure_paths['tts'], self.tts_mat, self.Tlist, self.label_list, linetype)
-
-    def draw_save_to(self, obs_name, fig_path, result_mat, Tlist, label_list, linetype, xlabel=None):
-        if xlabel is None:
-            xlabel = "$\\tau$ : Annealing time"
-        plt.figure()
-        plot_setting(font_size=10)
-        plt.xlabel(xlabel, fontsize=12)
-        plt.ylabel(obs_name, fontsize=12)
-        plt.xscale('log')
-        plt.yscale('log')
-
-        for label, result, lt in zip(label_list, result_mat, linetype):
-            plt.plot(Tlist, result, lt, label=label)
-
-        plt.legend()
-        plt.savefig(fig_path, bbox_inches="tight", pad_inches=0.0)
-
-
-
-
-def draw_eres_errorprob(figure_paths, N, Tlist, system, params, variables, draw=True):
-
-    eres_mat = []
-    errorprob_mat = []
-    tts_mat = []
-    for var in variables[1]:
-        allparams = params
-        allparams[variables[0]] = var
-        data_path = "./data/eres_errorprob/" + filename_from(N, '_', allparams, names=system.params_name) + ".dat"
-        if os.path.exists(data_path):
-            print('load data of {}'.format(data_path))
-            plot_Tlist, eres, errorprob, tts = calc_otherT_eres_errorprob(data_path, N, Tlist, system, allparams)
-
-            np.savetxt(data_path, [plot_Tlist, eres, errorprob, tts])
-
-            # choice only Tlist data
-            Tlist_arg = [np.where(plot_Tlist == t)[0][0] for t in Tlist]
-            eres = eres[Tlist_arg]
-            errorprob = errorprob[Tlist_arg]
-            tts = tts[Tlist_arg]
-
-        else:
-            print('never have been calculated parameters {}. calculating...'.format(allparams))
-            eres, errorprob, tts = calc_eres_errorprob(N, Tlist, system, allparams)
-            np.savetxt(data_path, np.array([Tlist, eres, errorprob, tts]))
-
-        eres_mat.append(eres)
-        errorprob_mat.append(errorprob)
-        tts_mat.append(tts)
-
-
-    if draw:
-        draw_to_figure('Residual energy', figure_paths['eres'], eres_mat, Tlist,
-                       N, params, variables, system.params_name)
-        draw_to_figure('Error probability', figure_paths['error_prob'], errorprob_mat, Tlist,
-                       N, params, variables, system.params_name)
-        draw_to_figure('TTS', figure_paths['tts'], tts_mat, Tlist,
-                       N, params, variables, system.params_name)
 
 
 def calc_otherT_eres_errorprob(data_path, N, Tlist, system, allparams):
@@ -143,26 +77,6 @@ def calc_eres_errorprob(N, Tlist, system, allparams):
         tts.append(T*np.log(1.0 - pd)/np.log(1-success_prob))
 
     return eres, errorprob, tts
-
-
-
-
-def draw_to_figure(observable, path, result_mat, Tlist, N, params, variable, params_name):
-    T = int(max(Tlist))
-    figure_path = path + filename_from(N, T, params, names=params_name) + '.pdf'
-
-    plt.figure()
-    plot_setting(font_size=10)
-    plt.xlabel("$T_{QA}$ : Annealing time", fontsize=12)
-    plt.ylabel(observable, fontsize=12)
-    plt.xscale('log')
-    plt.yscale('log')
-
-    for value, result in zip(variable[1], result_mat):
-        plt.plot(Tlist, result, label=variable[0]+"="+str(value))
-
-    plt.legend()
-    plt.savefig(figure_path, bbox_inches="tight", pad_inches=0.0)
 
 
 
