@@ -1,10 +1,11 @@
 import sys
 import numpy as np
 
-from QutipTempQA import DynamicsEresError, draw_energygap, OccupationProbability
+from QutipTempQA import DynamicsEresError, OccupationProbability
 from QASystemClass import BlockedSystem, FullConnectSystem
 
 SYSTEM = BlockedSystem
+p = 3
 
 def main(args):
     system_class = BlockedSystem
@@ -34,9 +35,9 @@ def eres_prob():
     p = 3
     Tlist = [1, 3, 5, 10, 30, 50, 100]
     params = {'p': p}
-    eres_error = DynamicsEresError(BlockedSystem, N, Tlist)
+    eres_error = DynamicsEresError(BlockedSystem, N, Tlist, "blocked_pspin")
     eres_error.calculation(params=params, label='p={}'.format(p))
-    return eres_error.data_path, 'N{}p{}'.format(N,p)
+    return eres_error.data_paths, 'N{}p{}'.format(N,p)
 
 def occ():
     p = 3

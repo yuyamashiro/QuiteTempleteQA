@@ -6,7 +6,7 @@ from QutipTempQA.utils.utils import *
 from .dynamics import dynamics_result
 
 class DynamicsEresError:
-    def __init__(self, system, N, Tlist):
+    def __init__(self, system, N, Tlist, system_name):
         self.system = system
         self.N = N
         self.Tlist = Tlist
@@ -15,9 +15,11 @@ class DynamicsEresError:
         self.tts_mat = []
         self.label_list = []
         self.data_paths = []
+        self.system_name = system_name
 
     def calculation(self, params, label):
-        data_path = "./data/eres_errorprob/" + filename_from(self.N, '_', params, names=self.system.params_name) + ".dat"
+        data_path = "./data/eres_errorprob/" + self.system_name \
+        + filename_from(self.N, '_', params, names=self.system.params_name) + ".dat"
         if os.path.exists(data_path):
             print('load data of {}'.format(data_path))
             plot_Tlist, eres, errorprob, tts = calc_otherT_eres_errorprob(data_path, self.N, self.Tlist, self.system, params)
@@ -32,7 +34,8 @@ class DynamicsEresError:
 
         else:
             print('never have been calculated parameters {}. calculating...'.format(params))
-            eres, errorprob, tts = calc_eres_errorprob(self.N, self.Tlist, self.system, params)
+            os.makedirs("./data/eres_errorprob/"+self.system_name, exist_ok=True)
+            eres, errorprob, tts = calc_eres_errorprob(self.N, self.Tlist, self.system, params, self.system_name)
             np.savetxt(data_path, np.array([self.Tlist, eres, errorprob, tts]))
 
         self.data_paths.append(data_path)
@@ -42,13 +45,13 @@ class DynamicsEresError:
         self.label_list.append(label)
 
 
-def calc_otherT_eres_errorprob(data_path, N, Tlist, system, allparams):
+def calc_otherT_eres_errorprob(data_path, N, Tlist, system, allparams, system_name):
     calculated_Tlist, eres, errorprob, tts = np.loadtxt(data_path)
     if not hasattr(calculated_Tlist, '__iter__'):
         calculated_Tlist = [calculated_Tlist]
     will_calc_Tlist = list(set(Tlist) - set(calculated_Tlist))
 
-    new_eres, new_errorprob, new_tts = calc_eres_errorprob(N, will_calc_Tlist, system, allparams)
+    new_eres, new_errorprob, new_tts = calc_eres_errorprob(N, will_calc_Tlist, system, allparams, system_name)
 
     eres = np.append(eres, new_eres)
     errorprob = np.append(errorprob, new_errorprob)
@@ -60,14 +63,14 @@ def calc_otherT_eres_errorprob(data_path, N, Tlist, system, allparams):
     return new_Tlist[sorted_arg_Tlist], eres[sorted_arg_Tlist], errorprob[sorted_arg_Tlist], tts[sorted_arg_Tlist]
 
 
-def calc_eres_errorprob(N, Tlist, system, allparams):
+def calc_eres_errorprob(N, Tlist, system, allparams, system_name):
     eres = []
     errorprob = []
     tts = []
     pd = 0.99
     for T in Tlist:
         sys = system(T, N, allparams)
-        final_state = dynamics_result(sys, N, T, allparams)
+        final_state = dynamics_result(sys, N, T, allparams, system_name)
         correct_energy, correct_state = sys.H(T).eigenstates(eigvals=1)
 
         eres.append(1.0 / sys.N * np.abs(expect(sys.H(T), final_state) - correct_energy[0]))
@@ -77,6 +80,3 @@ def calc_eres_errorprob(N, Tlist, system, allparams):
         tts.append(T*np.log(1.0 - pd)/np.log(1-success_prob))
 
     return eres, errorprob, tts
-
-
-

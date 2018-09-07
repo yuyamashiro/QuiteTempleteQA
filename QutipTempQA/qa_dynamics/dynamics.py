@@ -3,9 +3,9 @@ import pickle
 
 from QutipTempQA.utils.utils import *
 
-def dynamics_result(system ,N, T, param, only_final=True):
+def dynamics_result(system ,N, T, param, system_name, only_final=True):
 
-    file_path = "./data/evo_state/N{}".format(N)
+    file_path = "./data/evo_state/N{}/{}".format(N, system_name)
     os.makedirs(file_path, exist_ok=True)
 
     file_path += "/finalstate_" + filename_from(N, T, param, system.params_name) + '.pickle'
