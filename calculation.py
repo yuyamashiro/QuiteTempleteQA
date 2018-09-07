@@ -22,11 +22,7 @@ def main(args):
                        variables=['p',[p]]
                        )
     elif args[0] == 'occ':
-        fig_path = './figure/OccProb/'
-        T = 10
-        occ_prob = OccupationProbability(system=system_class, N=N, T=T)
-        occ_prob.calculation(params={'p': p}, M=5)
-        occ_prob.draw(fig_path)
+        occ()
     else:
         raise ValueError('{} is not defined.'.format(args[0]))
 
@@ -41,11 +37,11 @@ def eres_prob():
 
 def occ():
     p = 3
-    N = 10
+    N = 50
     T = 10
     M = 5
     params = {'p': p}
-    occ_prob = OccupationProbability(SYSTEM, N, T)
+    occ_prob = OccupationProbability(SYSTEM, N, T, system_name="blocked_pspin")
     occ_prob.calculation(params=params, M=M)
 
     return occ_prob.tlist, occ_prob.evals_data_path, occ_prob.p_data_path, \

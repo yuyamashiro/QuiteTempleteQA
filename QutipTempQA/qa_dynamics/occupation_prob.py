@@ -5,7 +5,7 @@ from .dynamics import *
 
 
 class OccupationProbability:
-    def __init__(self, system, N, T):
+    def __init__(self, system, N, T, system_name):
         self.system = system
         self.evals_mat = []
         self.P_mat = []
@@ -20,12 +20,14 @@ class OccupationProbability:
         self.evals_data_path = ''
         self.p_data_path = ''
 
+        self.system_name = system_name
+
     def calculation(self, params, M):
 
         self.file_name = filename_from(self.N, self.T,
                                        param=params, names=self.system.params_name) + 'M_' + str(M)
 
-        file_path = "./data/occ_prob/" + self.file_name
+        file_path = "./data/occ_prob/{}/".format(self.system_name) + self.file_name
         os.makedirs(file_path, exist_ok=True)
 
         self.evals_data_path = file_path +'/evals_'+self.file_name+'.dat'
@@ -39,13 +41,13 @@ class OccupationProbability:
             self.P_mat = np.loadtxt(self.p_data_path)
         else:
             print('*** calculate ***')
-            self.tlist = self.calc_evals_Pmat(params, M)
+            self.tlist = self.calc_evals_Pmat(params, M, self.system_name)
             np.savetxt(self.evals_data_path, self.evals_mat)
             np.savetxt(self.t_data_path, self.tlist)
             np.savetxt(self.p_data_path, self.P_mat)
 
 
-    def calc_evals_Pmat(self, params, M):
+    def calc_evals_Pmat(self, params, M, system_name):
 
         self.M = M
         sys = self.system(self.N, self.T, params)
@@ -53,7 +55,8 @@ class OccupationProbability:
         self.evals_mat = []
         self.P_mat = []
 
-        results = dynamics_result(system=sys, N=self.N, T=self.T, param=params, only_final=False)
+        results = dynamics_result(system=sys, N=self.N, T=self.T, param=params,
+                                  system_name=system_name, only_final=False)
         for t, psi in zip(results.times, results.states):
             # find the M lowest eigenvalues of the system
             evals, ekets = sys.H(t).eigenstates(eigvals=M)
