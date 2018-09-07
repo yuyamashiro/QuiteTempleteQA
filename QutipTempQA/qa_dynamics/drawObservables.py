@@ -22,7 +22,7 @@ class DynamicsEresError:
         + filename_from(self.N, '_', params, names=self.system.params_name) + ".dat"
         if os.path.exists(data_path):
             print('load data of {}'.format(data_path))
-            plot_Tlist, eres, errorprob, tts = calc_otherT_eres_errorprob(data_path, self.N, self.Tlist, self.system, params)
+            plot_Tlist, eres, errorprob, tts = calc_otherT_eres_errorprob(data_path, self.N, self.Tlist, self.system, params, self.system_name)
 
             np.savetxt(data_path, [plot_Tlist, eres, errorprob, tts])
 
