@@ -18,7 +18,7 @@ class DynamicsEresError:
         self.system_name = system_name
 
     def calculation(self, params, label):
-        data_path = "./data/eres_errorprob/" + self.system_name \
+        data_path = "./data/eres_errorprob/{}/".format(self.system_name) \
         + filename_from(self.N, '_', params, names=self.system.params_name) + ".dat"
         if os.path.exists(data_path):
             print('load data of {}'.format(data_path))
